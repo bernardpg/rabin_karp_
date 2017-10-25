@@ -1,0 +1,183 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#define prime_1 79
+#define prime_2
+#define mod_1 997
+#define mod_2 991
+//#define collision_1
+//#define collision_2
+#define total_x 6
+#define total_y 10
+#define patternx 2
+#define patterny 3
+//#define carry 110
+//rolling_hash dynamic program
+
+int array [mod_1];//[mod_2];
+int dpx [total_x-patternx+1][total_y];
+int dpy [total_x-patternx+1][total_y-patterny+1];
+int hash(int prime, int mod,int *pattern,int xp_len,int xt_len,int yp_len,int yt_len )//2d-hash value
+{
+   int hash,i,j,k,ptr;
+
+    for(k=0;k<2;k++){
+    for (i=0;i<6;i++)
+     {
+
+
+    printf("%d",*(pattern+k*xt_len+i));//i橫向,j直向
+    }
+    printf("\n");
+    }
+    //system("pause");
+   for(k=0;ptr=xp_len,hash=0,j=0,k<total_y;k++)//1d直
+   {
+    for(i=0;i<=xt_len-xp_len;i++)//橫
+    {   //printf("%d",*(pattern+(1*(total_len)+5)))//last_value ;//[k]);
+           if(i!=0)
+        {//general_form
+        dpx[i][k]= ((int)((dpx[i-1][k]-(*(pattern+k*xt_len+i-1))*pow(prime,xp_len-1))*prime+(*(pattern+k*xt_len+(i-1)+(xp_len))*pow(prime,0))))% mod_1;
+        //printf("%d",(*(pattern+k*xt_len+i-1)));
+        printf("\n");
+        //printf("%d",*(pattern+k*xt_len+(i-1)+(xt_len-xp_len)));
+        printf("\n");
+       // system("pause");
+        if (dpx[i][k]<0)
+            {
+            dpx[i][k]=dpx[i][k]+mod_1;
+            }
+        printf("%d",dpx[i][k]);
+        printf("\n");
+        }
+    else
+        {
+        while(ptr!=0)//initialize
+        {
+        hash=hash+(*(pattern+k*xt_len+j+i))*pow(prime,ptr-1);
+        j++;
+        ptr--;
+        }
+        dpx[i][k]=hash%mod_1;
+        printf("%d",dpx[i][k]);
+        }
+   }
+   }
+   for(i=0;i<total_x;i++)
+    {
+        for(k=0;k<total_y-patterny+1;k++)
+            {
+                printf("%d",dpx[k][i]);
+            }
+            system("pause");
+        printf("\n");
+    }
+printf("end");
+    for(i=0;ptr=yp_len,hash=0,j=0,i<=xt_len-xp_len;i++)//1d直
+   {
+    for(k=0;k<=yt_len-yp_len;k++)//橫
+    {   //printf("%d",*(pattern+(1*(total_len)+5)))//last_value ;//[k]);
+           printf("dpx[k][i]");
+           printf("%d",dpx[k][i]);
+           system("pause");
+           if(k!=0)
+        {//general_form
+        printf("\n");
+        printf("dpy[i][k]+zz");
+
+        dpy[i][k]= ((int)((dpy[i][k-1]-(dpx[k-1][i])*pow(prime,yp_len-1))*prime+(dpx[k-1+yp_len][i])*pow(prime,0)))% mod_2;
+
+        //printf("%d",(*(pattern+k*total_len+i-1)));
+//        printf("\n");
+        //printf("%d",*(pattern+k*total_len+(i-1)+(total_len-pat_len)));
+  //      printf("\n");
+        //system("pause");
+        if (dpy[i][k]<0)
+            {
+            dpy[i][k]=dpy[i][k] + mod_2;
+            }
+        printf("%d",dpy[i][k]);
+        //printf("\n");
+        }
+    else
+        {
+        while(ptr!=0)//initialize
+        {
+        hash=hash+(dpx[j][i])*pow(prime,ptr-1);
+        j++;
+        ptr--;
+        }
+        dpy[i][k]=hash%mod_2;
+        printf("dpy[i][k]");
+        printf("%d",dpy[i][k]);
+        }
+   }
+   }
+  return(0);
+   }
+
+void hash_insert(int *dp,int *array,int *pattern,int total_len,int pattern_len)
+{
+    int i,j,curindex;
+   for(i=0;i<=total_len-pattern_len;i++)
+   {
+    if (array[dp[i]]==0)
+       array[dp[i]]=pattern[i];
+    else	//欲存入的空間不為空，按照開放地址法繼續往後找空的空間。
+        {
+        for(j=0;j<mod_1;j++)
+        {
+            curindex = (dp[i]+j)%mod_1;
+            printf("%d",curindex);
+            printf("\n");
+            if(array[curindex] == 0)//判斷新的存儲位置是否為空
+            {
+            array[curindex]=pattern[i];
+            break;
+            }
+        }
+        }
+   }
+}
+//void search()
+//void intial()
+void main(void)//compare
+{int i,j;
+    int pattern_z[6]={};
+    int pattern_x[10][6]=
+    {
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19},
+        {23,41,25,63,22,19}
+    };
+    printf("\n");
+    int xt_len=6,xp_len=3;
+    int yt_len=10,yp_len=3;
+    int k;
+    hash(prime_1,mod_1,&pattern_x,xp_len,xt_len,yp_len,yt_len);// x x y y
+    
+    for(i=0;i<=xt_len-xp_len;i++)//printx
+   {
+    for(k=0;k<total_y-patterny+1;k++)//printy
+    {
+      printf ("%d", dpy[i][k]);
+    }
+    //hash_insert(dp,&array,pattern,total_len,pattern_len);
+    printf("\n");
+//}
+    }
+
+//   printf("%d",dpy);
+   //1d
+    //hash_in(prime_1,mod_1,&pattern_z,pattern_len,total_len);
+   //for(i=0;i<mod_1;i++) printf("%d",array[i]);
+  //  hash(prime_2,mod_2);//2d
+}
+/
